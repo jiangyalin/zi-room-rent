@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "chromedriver": "^102.0.0",
+    "jquery": "^3.6.0",
+    "jsdom": "^19.0.0",
+    "selenium-webdriver": "^4.1.2"
+  }
+}

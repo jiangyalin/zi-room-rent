@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .m-list {
+        }
+
+        .u-li {
+        }
+        .u-img {
+          height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <ul class="m-list j-list">
+    </ul>
+</body>
+<script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.js"></script>
+<script src="./data/collection-tree.json"></script>
+<script>
+	window.onload = function () {
+		$.ajax({
+			url: './data/collection-tree.json',
+			success: function (res) {
+				console.log('res', res)
+				let html = ''
+                const list = res.filter(item => item.fromSubway < 800).filter(item => item.area > 14.5)
+				list.forEach(function (item, index) {
+					html += '' +
+                      '<li class="u-li">' +
+                      '<p>' + (index + 1) + '</p>' +
+                      '<img class="u-img" src="' + item.houseTypeImg + '"/><a href="' + item.indexHtml + '">' + item.subwayStation + '</a></li>'
+                })
+				$('.j-list').html(html)
+                console.log('list', list.length)
+			}
+		})
+	}
+</script>
+</html>
