@@ -5,9 +5,10 @@ const path = require('chromedriver').path // 必要，不能删除
 const Path = require('path')
 const jsDom = require('jsdom').JSDOM
 const jquery = require('jquery')
+const jsonData = require('./data/collection-tree.json')
 
 const createJson = (data, fileName = 'collection-tree') => {
-	fs.writeFileSync(Path.join(__dirname, './data/' + fileName + '.json'), JSON.stringify(data, null, '\t'))
+	fs.writeFileSync(Path.join(__dirname, './dist/' + fileName + '.json'), JSON.stringify(data, null, '\t'))
 }
 
 // 获取分页
@@ -21,7 +22,8 @@ const getPage = async (driver, page = 1) => {
 		const text1 = $(this).find('.desc').children('div').eq(0).text()
 		const text2 = $(this).find('.location').text()
 		const text3 = $(this).find('.tip-info').text()
-		room.id = ''
+		const text4 = $(this).find('.pic-wrap').attr('href')
+		room.id = text4.substring(text4.lastIndexOf('/') + 1, text4.lastIndexOf('.html'))
 		room.name = $(this).find('.title').text()
 		room.indexHtml = 'https:' + $(this).find('.pic-wrap').attr('href') // 主页
 		room.cover = 'https:' + $(this).find('.lazy').attr('src') // 封面
@@ -35,12 +37,14 @@ const getPage = async (driver, page = 1) => {
 		json.push(room)
 	})
 
+	console.log('kkk')
+
 	const isNextPage = Boolean($('.next').text())
 
 	for (let i = 0; i < json.length; i++) {
 		const room = json[i]
 
-		await driver.get('https:' + room.indexHtml)
+		await driver.get(room.indexHtml)
 
 		$ = jquery(new jsDom(await driver.getPageSource()).window)
 
@@ -48,6 +52,7 @@ const getPage = async (driver, page = 1) => {
 
 		// room.screenshot = 'data:image/webp;base64,' + await driver.takeScreenshot() // 详情页截图
 	}
+	console.log('ooo')
 
 	return {
 		data: json,
@@ -56,24 +61,8 @@ const getPage = async (driver, page = 1) => {
 }
 
 async function example () {
-	// const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().detachDriver(true)).build()
 	const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options()).build()
-	// const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().headless()).build()
 	try {
-		// await driver.findElement(By.css('#settings_person')).click()
-		// await driver.sleep(2000)
-		// await driver.findElement(By.css('input[name="login_name"]')).sendKeys('18725944157@163.com')
-		// await driver.findElement(By.css('input[name="login_pass"]')).sendKeys('jiang1995991')
-		// await driver.findElement(By.css('input[type="submit"]')).click()
-		// await driver.sleep(2000)
-		// await driver.get('https://www.wnacg.org/users-users_fav.html')
-		// let $ = jquery(new jsDom(await driver.getPageSource()).window)
-		// $('.nav_list a').each(function () {
-		// 	console.log('ddd', $(this).text())
-		// })
-		// console.log('aa', $('.nav_list a').html())
-		// createJson([{}])
-
 		const json = []
 
 		for (let i = 0; i < 100; i++) {
